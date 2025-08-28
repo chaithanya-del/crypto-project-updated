@@ -57,8 +57,8 @@ const rateText = useMemo(() => {
             </select></>):(<>
             <input className='input' type='number' min='0' step='any' placeholder='0.0' value={fiatAmount} onChange={e=>onFiatChange(e.target.value)} />
             <div style={{width:200}} className='badge'>$ USD</div></>)}</div></label></div>
-      <button className='btn' onClick={onSwap} aria-label='Swap fields'>⇅</button>
-      <div className='col'>
+      <button className='btn swap-fields' onClick={onSwap} aria-label='Swap fields'>⇅</button>
+      <div className='col fiat-amount'>
         <label><div style={{marginBottom:6}}>{mode==='CRYPTO_TO_FIAT'?'Fiat amount (USD)':'Crypto amount'}</div>
           <div className='row' style={{gap:8}}>{mode==='CRYPTO_TO_FIAT'? (<>
             <input className='input' type='number' min='0' step='any' placeholder='0.0' value={fiatAmount} onChange={e=>onFiatChange(e.target.value)} />
