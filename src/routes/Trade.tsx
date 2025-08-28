@@ -18,14 +18,27 @@ export default function Trade(){
 
   useEffect(()=>{ if(!user){ nav('/',{replace:true,state:{login:true}}); return } if(location?.state?.assetId) setSelectedAssetId(location.state.assetId) },[location,user,nav])
 
-  const selected=useMemo(()=>catalog?.find(a=>a.id===selectedAssetId),[catalog,selectedAssetId])
-  const rateText = (()=>{
-    if(price.status==='loading') return 'Loading…'
-    const p = typeof price.data === 'number' ? price.data : null
-    const s = selected?.symbol ?? ''
-    if(p==null || !isFinite(p)) return `1 ${s} = —`
-    try { return `1 ${s} = $${p.toLocaleString(undefined,{maximumFractionDigits:8})}` } catch { return `1 ${s} = $${p}` }
-  })()
+  // const selected=useMemo(()=>catalog?.find(a=>a.id===selectedAssetId),[catalog,selectedAssetId])
+  // const rateText = (()=>{
+  //   if(price.status==='loading') return 'Loading…'
+  //   const p = typeof price.data === 'number' ? price.data : null
+  //   const s = selected?.symbol ?? ''
+  //   if(p==null || !isFinite(p)) return `1 ${s} = —`
+  //   try { return `1 ${s} = $${p.toLocaleString(undefined,{maximumFractionDigits:8})}` } catch { return `1 ${s} = $${p}` }
+  // })()
+  const selected = useMemo(
+  () => catalog?.find((a) => a.id === selectedAssetId),
+  [catalog, selectedAssetId]
+);
+
+// v5-safe + null-safe rate text
+const rateText = useMemo(() => {
+  if (price.isLoading) return 'Loading…';
+  if (price.isError || typeof price.data !== 'number') return '—';
+
+  const s = selected?.symbol ?? '';
+  return `1 ${s} = $${price.data.toLocaleString(undefined, { maximumFractionDigits: 8 })}`;
+}, [price.isLoading, price.isError, price.data, selected?.symbol]);
 
   function onSwap(){ setMode(m=>m==='CRYPTO_TO_FIAT'?'FIAT_TO_CRYPTO':'CRYPTO_TO_FIAT'); setCryptoAmount(prev=>{ const next=fiatAmount; setFiatAmount(prev); return next }) }
   function onCryptoChange(v:string){ setCryptoAmount(v); const n=Number(v); if(!isFinite(n)||typeof price.data!=='number') return setFiatAmount(''); setFiatAmount((n*price.data).toString()) }
