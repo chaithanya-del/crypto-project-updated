@@ -1,0 +1,3 @@
+import { Component, type ReactNode } from 'react'
+type Props={children:ReactNode}; type State={hasError:boolean;msg?:string}
+export default class ErrorBoundary extends Component<Props,State>{ state:State={hasError:false}; static getDerivedStateFromError(e:unknown){return {hasError:true,msg:(e as any)?.message}}; render(){return this.state.hasError? <div className='container'><div className='alert'>Something went wrong: {this.state.msg}</div></div> : this.props.children }}
